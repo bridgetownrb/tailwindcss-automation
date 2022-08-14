@@ -24,4 +24,4 @@ Any questions? [Check out the Bridgetown community discussion channels for help.
 
 ## Future Compatibility Message
 
-The Tailwind automation used to be a configuration option bundled with Bridgetown, but it has since been extracted to this community-maintained repository. I ([@jaredcwhite](https://github.com/jaredcwhite)) do not use or endorse Tailwind, but I'm happy to accept PRs to keep the automation working in case future version of Tailwind breaks the script in some way. Thanks!
+The Tailwind automation used to be a configuration option bundled with Bridgetown, but it has since been extracted to this community-maintained repository. I ([@jaredcwhite](https://github.com/jaredcwhite)) do not use or endorse Tailwind, but I'm happy to accept PRs to keep the automation working in case a future version of Tailwind breaks the script in some way. Thanks!
