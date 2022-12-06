@@ -72,7 +72,7 @@ create_builder "tailwind_jit.rb" do
     class Builders::TailwindJit < SiteBuilder
       def build
         hook :site, :pre_reload do |_, paths|
-          # Skip if path are not defined (e.g: from console reload)
+          # Skip if paths are not defined (e.g: from console reload)
           next unless paths
 
           # Don't trigger refresh if it's a frontend-only change
