@@ -5,7 +5,7 @@ say_status :tailwind, "Installing Tailwind CSS..."
 confirm = ask "This configuration will ovewrite your existing #{"postcss.config.js".bold.white}. Would you like to continue? [Yn]"
 return unless confirm.casecmp?("Y")
 
-run "yarn add -D tailwindcss"
+run "yarn add -D tailwindcss@3"
 run "npx tailwindcss init"
 
 gsub_file "tailwind.config.js", "content: [],", <<~JS.strip
