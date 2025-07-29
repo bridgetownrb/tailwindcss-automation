@@ -5,26 +5,18 @@ say_status :tailwind, "Installing Tailwind CSS..."
 confirm = ask "This configuration will ovewrite your existing #{"postcss.config.js".bold.white}. Would you like to continue? [Yn]"
 return unless confirm.casecmp?("Y")
 
-run "yarn add -D tailwindcss"
-run "npx tailwindcss init"
-
-gsub_file "tailwind.config.js", "content: [],", <<~JS.strip
-  content: [
-      './src/**/*.{html,md,liquid,erb,serb,rb}',
-      './frontend/javascript/**/*.js',
-    ],
-JS
+run "npm install tailwindcss @tailwindcss/postcss --save-dev"
 
 create_file "postcss.config.js", <<~JS, force: true
-  module.exports = {
+  export default {
     plugins: {
-      'tailwindcss': {},
+      '@tailwindcss/postcss': {},
       'postcss-flexbugs-fixes': {},
       'postcss-preset-env': {
         autoprefixer: {
           flexbox: 'no-2009'
         },
-        stage: 2
+        stage: 3
       }
     }
   }
@@ -36,9 +28,7 @@ css_imports = <<~CSS
   @import "jit-refresh.css"; /* triggers frontend rebuilds */
 
   /* Set up Tailwind imports */
-  @tailwind base;
-  @tailwind components;
-  @tailwind utilities;
+  @import "tailwindcss";
 
 CSS
 
@@ -68,20 +58,26 @@ if File.exist?(".gitignore")
 end
 
 create_builder "tailwind_jit.rb" do
-  <<~RUBY
+  <<~'RUBY'
     class Builders::TailwindJit < SiteBuilder
       def build
-        hook :site, :pre_reload do |_, paths|
-          # Skip if paths are not defined (e.g: from console reload)
-          next unless paths
+        return if ARGV.include?("--skip-tw-jit")
 
-          # Don't trigger refresh if it's a frontend-only change
-          next if paths.length == 1 && paths.first.ends_with?("manifest.json")
+        fast_refreshing = false
 
-          # Save out a comment file to trigger Tailwind's JIT
-          refresh_file = site.in_root_dir("frontend", "styles", "jit-refresh.css")
-          File.write refresh_file, "/* \#{Time.now.to_i} */"
-          throw :halt # don't continue the build, wait for watcher rebuild
+        hook :site, :fast_refresh do
+          fast_refreshing = true
+        end
+
+        hook :site, :post_write do
+          if fast_refreshing
+            fast_refreshing = false
+            Thread.new do
+              sleep 0.75
+              refresh_file = site.in_root_dir("frontend", "styles", "jit-refresh.css")
+              File.write refresh_file, "/* #{Time.now.to_i} */"
+            end
+          end
         end
       end
     end
