@@ -18,10 +18,10 @@ The automation will install `tailwindcss` and `@tailwindcss/cli`, create `fronte
 
 During `frontend:build`, the `bin/tailwindcss` helper runs the Tailwind CLI, then fingerprints the generated CSS and updates the Bridgetown manifest entry for `styles/tailwind.css`. During `frontend:watch`, the helper runs Tailwind in watch mode.
 
-To load the stylesheet in your templates, use:
+To load the stylesheet in your templates, add a link tag to your head partial (likely `src/_partials/_head.erb`):
 
 ```
-<%= asset_path "styles/tailwind.css" %>
+<link rel="stylesheet" href="<%= asset_path "styles/tailwind.css" %>" />
 ```
 
 Any questions? [Check out the Bridgetown community discussion channels for help.](https://www.bridgetownrb.com/community)
