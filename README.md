@@ -8,15 +8,21 @@ In your Bridgetown project folder, run:
 bin/bridgetown apply https://github.com/bridgetownrb/tailwindcss-automation
 ```
 
-(Note: it will overwrite any existing `postcss.config.js` file in your repo.)
-
 You can also apply the automation when creating a new site:
 
 ```
 bridgetown new mysite --apply=https://github.com/bridgetownrb/tailwindcss-automation
 ```
 
-The automation will add Tailwind to your `package.json`, set up a default Tailwind config, add the import statements to your frontend CSS entrypoint, and add a builder which will detect when content in `src` is modified and trigger Tailwind's JIT compiler to run.
+The automation will install `tailwindcss` and `@tailwindcss/cli`, create `frontend/styles/tailwind.css` with the recommended `@import` and `@source` directives, wire Tailwind into your frontend bundling manifest, and add a `bin/tailwindcss` helper for building and watching.
+
+During `frontend:build`, the `bin/tailwindcss` helper runs the Tailwind CLI, then fingerprints the generated CSS and updates the Bridgetown manifest entry for `styles/tailwind.css`. During `frontend:watch`, the helper runs Tailwind in watch mode.
+
+To load the stylesheet in your templates, use:
+
+```
+<%= asset_path "styles/tailwind.css" %>
+```
 
 Any questions? [Check out the Bridgetown community discussion channels for help.](https://www.bridgetownrb.com/community)
 
